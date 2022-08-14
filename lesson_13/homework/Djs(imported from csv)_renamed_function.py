@@ -1,5 +1,5 @@
-import json
-from pprint import pprint
+import csv
+from pprint import pprint as print
 
 
 class Dj:
@@ -90,7 +90,7 @@ class Dj:
     @classmethod
     def names(cls):
         data = [dj.name for dj in Dj.djs]
-        pprint(data)
+        print(data)
 
     @classmethod
     def validate(cls, data):
@@ -117,35 +117,34 @@ class Dj:
         return cls(*data)
 
     @classmethod
-    def read_from_file(cls):
-        FILENAME = "djs.json"
+    def read_from_csv(cls):
+        FILENAME = "djs.csv"
 
-        with open(FILENAME) as file:
-            data = json.load(file)["results"]
+        with open(FILENAME, newline='') as file:
 
-        djs = [cls(**payload) for payload in data]
+            data = csv.DictReader(file, delimiter=",")
 
-        # djs = []
-        # for payload in data:
-        #     djs.append(cls(**payload))
+            djs = [cls(**payload) for payload in data]
 
         return djs
 
     @classmethod
     def update_file(cls):
-        FILENAME = "djs.json"
+        FILENAME = "djs.csv"
         formatted_djs = [dj.as_dict for dj in cls.djs]
 
-        data = {"results": formatted_djs}
-        data_as_json = json.dumps(data, indent=4)
+        with open(FILENAME, "w", newline='') as file:
+            fieldnames = ["name", "age", "equipment", "discography", "salary", "genre", "male"]
+            writer = csv.DictWriter(file, delimiter=",", fieldnames=fieldnames)
+            writer.writeheader()
 
-        with open(FILENAME, "w") as file:
-            file.write(data_as_json)
+            for dj in formatted_djs:
+                writer.writerow(dj)
 
 
 if __name__ == "__main__":
     # NOTE: Populate djs list
-    extracted_djs: list = Dj.read_from_file()
+    extracted_djs: list = Dj.read_from_csv()
     Dj.djs = extracted_djs
 
     allowed_options = "[add/list/names/delete/update/exit/]"

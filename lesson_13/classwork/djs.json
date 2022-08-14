@@ -8,6 +8,15 @@
             "salary": 0,
             "genre": "adm",
             "male": true
+        },
+        {
+            "name": "test",
+            "age": 34,
+            "equipment": "gfh",
+            "discography": 54,
+            "salary": 54,
+            "genre": "udfj",
+            "male": "male"
         }
     ]
 }
